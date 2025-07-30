@@ -7,7 +7,8 @@ import {
   MAX_AGENTS,
   WORKGROUP_SIZE,
   ENV_TEXTURE_SIZE,
-  GPU_STATS_BUFFER_SIZE
+  GPU_STATS_BUFFER_SIZE,
+  MAX_AGE
 } from '../config';
 
 export async function initGPU() {
@@ -94,7 +95,7 @@ export async function initGPU() {
   // Shader modules
   const computeModule = device.createShaderModule({
     code: computeSrc,
-    constants: { MAX_AGENTS, WORKGROUP_SIZE }
+    constants: { MAX_AGENTS, WORKGROUP_SIZE, MAX_AGE }
   });
   const plumeModule = device.createShaderModule({
     code: plumeSrc,
