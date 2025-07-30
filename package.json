@@ -1,0 +1,36 @@
+{
+  "name": "evo-sandbox",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && npm run size-report",
+    "serve": "vite preview",
+    "test": "vitest && playwright test",
+    "deploy": "npm run build && gh-pages -d dist",
+    "size-report": "vite build --reporter=json > dist/report.json",
+    "lint": "eslint . --ext .ts,.svelte"
+  },
+  "dependencies": {
+    "bitecs": "^0.3.40",
+    "gl-matrix": "^3.4.3",
+    "lz-string": "^1.4.4",
+    "svelte": "4.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@tsconfig/svelte": "^4.0.0",
+    "autoprefixer": "^10.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-svelte": "^2.0.0",
+    "gh-pages": "^5.0.0",
+    "playwright": "^1.40.0",
+    "postcss": "^8.0.0",
+    "svelte-preprocess": "^5.0.3",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.0.0",
+    "vitest": "^0.34.0"
+  }
+}
