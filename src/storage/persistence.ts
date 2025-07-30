@@ -14,6 +14,15 @@ export function initPersistence(
     usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
   });
 
+  function bufferToBase64(buf: ArrayBuffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buf);
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   let saving = false;
   async function autoSave() {
     if (saving) return;
@@ -27,7 +36,7 @@ export function initPersistence(
 
     const saveData = {
       schema: 1,
-      genomes: btoa(String.fromCharCode(...new Uint8Array(arr.buffer))),
+      genomes: bufferToBase64(arr.buffer),
       ringPtr: getFreeListState(),
       envSeed: 0,
       rngSeed: getFrameHash()

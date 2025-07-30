@@ -1,6 +1,6 @@
 // src/gpu/shaders/stats.wgsl
-override MAX_AGENTS: u32;
-override MAX_AGE: f32;
+@id(0) override MAX_AGENTS: u32;
+@id(1) override MAX_AGE: f32;
 
 struct AgentState {
   pos: vec2<f32>;
