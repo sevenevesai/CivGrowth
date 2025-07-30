@@ -9,6 +9,7 @@ export function initAudio() {
 }
 
 export function updateAudio(audio: any, biomass: number) {
+  if (!Number.isFinite(biomass)) return;
   const rel = biomass / 1_000_000;
   audio.osc.frequency.value = 110 * Math.pow(2, 8 * rel);
   audio.gain.gain.value = 0.8 / (1 + Math.exp(-12 * (rel - 0.5)));
