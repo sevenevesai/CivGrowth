@@ -1,8 +1,8 @@
 // src/gpu/shaders/compute.wgsl
-@id(0) override MAX_AGENTS: u32;
-@id(1) override WORKGROUP_SIZE: u32;
-@id(2) override ENV_TEXTURE_SIZE: u32;
-@id(3) override MAX_AGE: f32;
+override MAX_AGENTS: u32;
+override WORKGROUP_SIZE: u32;
+override ENV_TEXTURE_SIZE: u32;
+override MAX_AGE: f32;
 
 struct AgentState {
   pos: vec2<f32>;
