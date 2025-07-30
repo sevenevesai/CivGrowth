@@ -39,9 +39,7 @@ export function initPersistence(
     device.queue.writeBuffer(genomeBuffer, 0, bytes.buffer);
 
     const ptrArr = new Uint32Array([json.ringPtr.head, json.ringPtr.tail]);
-    const enc = device.createCommandEncoder();
-    enc.writeBuffer(freeListBuffer, 0, ptrArr.buffer);
-    device.queue.submit([enc.finish()]);
+    device.queue.writeBuffer(freeListBuffer, 0, ptrArr.buffer);
   }
 
   return { autoSave, load };

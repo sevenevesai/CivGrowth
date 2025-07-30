@@ -7,7 +7,7 @@ struct PlumeParams {
   eventPos: vec2<u32>;
   radius: f32;
   sign: f32;
-};
+}
 
 @group(0) @binding(0) var<uniform> pp: PlumeParams;
 @group(0) @binding(1) var envTex: texture_storage_2d<rgba8unorm, write>;

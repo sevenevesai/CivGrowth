@@ -6,7 +6,7 @@ struct AgentState {
   hue: f32;
   age: f32;
   _pad: f32;
-};
+}
 
 @group(0) @binding(0) var<storage, read> state: array<AgentState>;
 @group(0) @binding(1) var<uniform> camera: mat4x4<f32>;
@@ -21,7 +21,7 @@ struct VSOut {
   @builtin(position) pos: vec4<f32>;
   @location(0) hue: f32;
   @location(1) anim: f32;
-};
+}
 
 @vertex
 fn vs_main(
