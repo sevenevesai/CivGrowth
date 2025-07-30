@@ -1,5 +1,5 @@
 // src/gpu/shaders/plume.wgsl
-@id(0) override ENV_TEXTURE_SIZE: u32;
+override ENV_TEXTURE_SIZE: u32;
 
 struct PlumeParams {
   seed: u32;

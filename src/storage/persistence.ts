@@ -41,7 +41,11 @@ export function initPersistence(
       envSeed: 0,
       rngSeed: getFrameHash()
     };
-    localStorage.setItem('evo-save', btoa(JSON.stringify(saveData)));
+    try {
+      localStorage.setItem('evo-save', btoa(JSON.stringify(saveData)));
+    } catch (e) {
+      console.warn('Auto-save failed', e);
+    }
     readback.unmap();
     saving = false;
   }
