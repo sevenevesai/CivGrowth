@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run size-report",
+    "build": "vite build",
     "serve": "vite preview",
     "test": "vitest && playwright test",
     "deploy": "npm run build && gh-pages -d dist",
