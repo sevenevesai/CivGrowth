@@ -11,22 +11,22 @@ struct AgentState {
   hue: f32;
   age: f32;
   _pad: f32;
-};
+}
 
 struct Genome {
   genes: array<f32, 12>;
-};
+}
 
 struct FreeList {
   head: atomic<u32>;
   tail: atomic<u32>;
-};
+}
 
 struct Params {
   dt: f32;
   _pad: vec3<f32>;
   seed: u32;
-};
+}
 
 @group(0) @binding(0) var<storage, read> stateIn: array<AgentState>;
 @group(0) @binding(1) var<storage, read_write> stateOut: array<AgentState>;

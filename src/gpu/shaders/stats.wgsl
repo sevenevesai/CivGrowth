@@ -9,14 +9,14 @@ struct AgentState {
   hue: f32;
   age: f32;
   _pad: f32;
-};
+}
 
 struct StatOut {
   aliveCount: atomic<u32>;
   totalBiomass: atomic<u32>;
   totalFitness: atomic<u32>;
   _pad: u32;
-};
+}
 
 @group(0) @binding(0) var<storage, read> states: array<AgentState>;
 @group(0) @binding(1) var<storage, read_write> outStats: StatOut;

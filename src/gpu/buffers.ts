@@ -291,9 +291,10 @@ export async function initGPU() {
       const enc = device.createCommandEncoder();
       enc.copyBufferToBuffer(stagingState, 0, stateA, 0, count * 32);
       enc.copyBufferToBuffer(stagingGen, 0, genomes, 0, count * 48);
-      const ptr = new Uint32Array([count, count]);
-      enc.writeBuffer(freeList, 0, ptr.buffer);
       device.queue.submit([enc.finish()]);
+
+      const ptr = new Uint32Array([count, count]);
+      device.queue.writeBuffer(freeList, 0, ptr.buffer);
 
       pipelines.stepPass.freeListState.head = count;
       pipelines.stepPass.freeListState.tail = count;
