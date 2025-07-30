@@ -54,13 +54,16 @@ export async function initGPU() {
   // Genome buffer
   const genomes = device.createBuffer({
     size: MAX_AGENTS * 48,
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+    usage:
+      GPUBufferUsage.STORAGE |
+      GPUBufferUsage.COPY_DST |
+      GPUBufferUsage.COPY_SRC
   });
 
   // Free-list buffers
   const freeList = device.createBuffer({
     size: 8,
-    usage: GPUBufferUsage.STORAGE
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
   });
   const freeIds = device.createBuffer({
     size: MAX_AGENTS * 4,

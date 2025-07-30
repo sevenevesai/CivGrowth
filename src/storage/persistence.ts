@@ -14,7 +14,10 @@ export function initPersistence(
     usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
   });
 
+  let saving = false;
   async function autoSave() {
+    if (saving) return;
+    saving = true;
     const enc = device.createCommandEncoder();
     enc.copyBufferToBuffer(genomeBuffer, 0, readback, 0, genomeSize);
     device.queue.submit([enc.finish()]);
@@ -31,6 +34,7 @@ export function initPersistence(
     };
     localStorage.setItem('evo-save', btoa(JSON.stringify(saveData)));
     readback.unmap();
+    saving = false;
   }
 
   async function load(str: string) {
