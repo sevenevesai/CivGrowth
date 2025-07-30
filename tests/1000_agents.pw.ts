@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from 'playwright/test';
 
 test('golden 1000 agents', async ({ page }) => {
   await page.goto('http://localhost:5173');

@@ -35,7 +35,10 @@ async function main() {
     device,
     pipelines.stepPass.genomes,
     pipelines.stepPass.freeList,
-    () => ({ head: pipelines.stepPass.freeListHead, tail: pipelines.stepPass.freeListTail }),
+    () => ({
+      head: pipelines.stepPass.freeListState.head,
+      tail: pipelines.stepPass.freeListState.tail
+    }),
     () => pipelines.frameHash
   );
 

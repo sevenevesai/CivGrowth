@@ -28,8 +28,5 @@
     Disaster Freq:
     <input type="range" min="0" max="1" step="0.01" bind:value={disasterFreq} on:input={update} />
   </label>
-  <button on:click={() => navigator.clipboard.writeText(world.saveString)}>
-    Copy save string
-  </button>
-  <input placeholder="Paste save" on:change={(e) => world.load(e.target.value)} />
+  <!-- Persistence controls removed -->
 </div>
