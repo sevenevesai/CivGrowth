@@ -31,6 +31,7 @@ function injectConstants(code: string, constants: Record<string, number>) {
     code = code.replace(decl, (_, ty) => {
       return `const ${name}: ${ty} = ${formatValue(value, ty)};`;
     });
+
   }
   return code;
 }
