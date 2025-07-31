@@ -11,8 +11,21 @@ import {
   MAX_AGE
 } from '../config';
 
+function injectConstants(code: string, constants: Record<string, number>) {
+  for (const [key, val] of Object.entries(constants)) {
+    code = code.replace(new RegExp(`\\b${key}\\b`, 'g'), String(val));
+  }
+  return code;
+}
+
 export async function initGPU() {
+  if (!navigator.gpu) {
+    throw new Error('WebGPU is not supported in this browser');
+  }
   const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) {
+    throw new Error('Failed to acquire GPU adapter');
+  }
   const features: GPUFeatureName[] = [];
   if (adapter?.features.has('timestamp-query')) {
     features.push('timestamp-query');
@@ -97,16 +110,17 @@ export async function initGPU() {
 
   // Shader modules
   const computeModule = device.createShaderModule({
-    code: computeSrc,
-    constants: { MAX_AGENTS, WORKGROUP_SIZE, MAX_AGE }
+    code: injectConstants(computeSrc, {
+      MAX_AGENTS,
+      WORKGROUP_SIZE,
+      MAX_AGE
+    })
   });
   const plumeModule = device.createShaderModule({
-    code: plumeSrc,
-    constants: { ENV_TEXTURE_SIZE }
+    code: injectConstants(plumeSrc, { ENV_TEXTURE_SIZE })
   });
   const statsModule = device.createShaderModule({
-    code: statsSrc,
-    constants: { MAX_AGENTS }
+    code: injectConstants(statsSrc, { MAX_AGENTS })
   });
   const renderModule = device.createShaderModule({ code: renderSrc });
 
