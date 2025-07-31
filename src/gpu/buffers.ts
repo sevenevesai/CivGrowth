@@ -11,9 +11,26 @@ import {
   MAX_AGE
 } from '../config';
 
+function formatValue(val: number, type: string) {
+  if (type === 'u32') return `${Math.trunc(val)}u`;
+  if (type === 'f32') {
+    return Number.isInteger(val) ? `${val.toFixed(1)}` : String(val);
+  }
+  return String(val);
+}
+
+/**
+ * Replace WGSL `override` declarations with explicit `const` assignments.
+ * This avoids relying on browser support for the `constants` pipeline option.
+ */
 function injectConstants(code: string, constants: Record<string, number>) {
-  for (const [key, val] of Object.entries(constants)) {
-    code = code.replace(new RegExp(`\\b${key}\\b`, 'g'), String(val));
+  for (const [name, value] of Object.entries(constants)) {
+    const decl = new RegExp(
+      `override\\s+${name}\\s*:\\s*([a-zA-Z0-9_<>]+)\\s*;`
+    );
+    code = code.replace(decl, (_, ty) => {
+      return `const ${name}: ${ty} = ${formatValue(value, ty)};`;
+    });
   }
   return code;
 }
@@ -113,6 +130,7 @@ export async function initGPU() {
     code: injectConstants(computeSrc, {
       MAX_AGENTS,
       WORKGROUP_SIZE,
+      ENV_TEXTURE_SIZE,
       MAX_AGE
     })
   });
