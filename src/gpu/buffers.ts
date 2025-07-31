@@ -11,8 +11,38 @@ import {
   MAX_AGE
 } from '../config';
 
+function formatValue(val: number, type: string) {
+  if (type === 'u32') return `${Math.trunc(val)}u`;
+  if (type === 'f32') {
+    return Number.isInteger(val) ? `${val.toFixed(1)}` : String(val);
+  }
+  return String(val);
+}
+
+/**
+ * Replace WGSL `override` declarations with explicit `const` assignments.
+ * This avoids relying on browser support for the `constants` pipeline option.
+ */
+function injectConstants(code: string, constants: Record<string, number>) {
+  for (const [name, value] of Object.entries(constants)) {
+    const decl = new RegExp(
+      `override\\s+${name}\\s*:\\s*([a-zA-Z0-9_<>]+)\\s*;`
+    );
+    code = code.replace(decl, (_, ty) => {
+      return `const ${name}: ${ty} = ${formatValue(value, ty)};`;
+    });
+  }
+  return code;
+}
+
 export async function initGPU() {
+  if (!navigator.gpu) {
+    throw new Error('WebGPU is not supported in this browser');
+  }
   const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) {
+    throw new Error('Failed to acquire GPU adapter');
+  }
   const features: GPUFeatureName[] = [];
   if (adapter?.features.has('timestamp-query')) {
     features.push('timestamp-query');
@@ -97,16 +127,18 @@ export async function initGPU() {
 
   // Shader modules
   const computeModule = device.createShaderModule({
-    code: computeSrc,
-    constants: { MAX_AGENTS, WORKGROUP_SIZE, MAX_AGE }
+    code: injectConstants(computeSrc, {
+      MAX_AGENTS,
+      WORKGROUP_SIZE,
+      ENV_TEXTURE_SIZE,
+      MAX_AGE
+    })
   });
   const plumeModule = device.createShaderModule({
-    code: plumeSrc,
-    constants: { ENV_TEXTURE_SIZE }
+    code: injectConstants(plumeSrc, { ENV_TEXTURE_SIZE })
   });
   const statsModule = device.createShaderModule({
-    code: statsSrc,
-    constants: { MAX_AGENTS }
+    code: injectConstants(statsSrc, { MAX_AGENTS })
   });
   const renderModule = device.createShaderModule({ code: renderSrc });
 

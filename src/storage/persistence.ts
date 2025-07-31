@@ -1,5 +1,6 @@
 // src/storage/persistence.ts
 import { MAX_AGENTS } from '../config';
+import { compressToBase64, decompressFromBase64 } from 'lz-string';
 
 export function initPersistence(
   device: GPUDevice,
@@ -20,12 +21,13 @@ export function initPersistence(
     for (let i = 0; i < bytes.length; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
-    return btoa(binary);
+    return compressToBase64(binary);
   }
 
+  let lastSave = 0;
   let saving = false;
   async function autoSave() {
-    if (saving) return;
+    if (saving || performance.now() - lastSave < 60000) return;
     saving = true;
     const enc = device.createCommandEncoder();
     enc.copyBufferToBuffer(genomeBuffer, 0, readback, 0, genomeSize);
@@ -42,7 +44,8 @@ export function initPersistence(
       rngSeed: getFrameHash()
     };
     try {
-      localStorage.setItem('evo-save', btoa(JSON.stringify(saveData)));
+      localStorage.setItem('evo-save', compressToBase64(JSON.stringify(saveData)));
+      lastSave = performance.now();
     } catch (e) {
       console.warn('Auto-save failed', e);
     }
@@ -51,8 +54,9 @@ export function initPersistence(
   }
 
   async function load(str: string) {
-    const json = JSON.parse(atob(str));
-    const bytes = Uint8Array.from(atob(json.genomes), (c) => c.charCodeAt(0));
+    const json = JSON.parse(decompressFromBase64(str));
+    const genomeData = decompressFromBase64(json.genomes);
+    const bytes = Uint8Array.from(genomeData, (c) => c.charCodeAt(0));
     device.queue.writeBuffer(genomeBuffer, 0, bytes.buffer);
 
     const ptrArr = new Uint32Array([json.ringPtr.head, json.ringPtr.tail]);
